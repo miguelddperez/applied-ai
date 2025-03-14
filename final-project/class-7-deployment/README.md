@@ -1,4 +1,4 @@
-# Class 7: Deploying & Fine-Tuning the Chatbot
+# Class 7: Deploying & Fine-Tuning the Chatbot (OPTIONAL)
 
 ## Assignment (15 points)
 
