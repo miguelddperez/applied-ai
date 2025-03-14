@@ -32,6 +32,7 @@ Each class is **2 hours long**, blending **theory and hands-on activities**.
 🛠 **Hands-On:**
 - Define chatbot purpose, audience & workflows.
 - Set up N8N, Supabase & obtain WhatsApp API credentials.
+
 📌 **Assignment:**
 - Write a **Chatbot Project Summary** (business goal, features, users).
 - Install & configure **N8N and Supabase**.
@@ -43,6 +44,7 @@ Each class is **2 hours long**, blending **theory and hands-on activities**.
 🛠 **Hands-On:**
 - Set up **WhatsApp API** & test message reception.
 - Create an **N8N workflow** for WhatsApp message logging.
+
 📌 **Assignment:**
 - Ensure **WhatsApp API is fully configured**.
 - Build an **N8N workflow to log messages** in Supabase.
@@ -54,6 +56,7 @@ Each class is **2 hours long**, blending **theory and hands-on activities**.
 🛠 **Hands-On:**
 - Set up **OpenAI API** & integrate it into N8N.
 - Experiment with **prompt engineering** to refine responses.
+
 📌 **Assignment:**
 - Test different **prompt styles** to enhance chatbot responses.
 - Store **chat history in Supabase** for personalization.
@@ -65,6 +68,7 @@ Each class is **2 hours long**, blending **theory and hands-on activities**.
 🛠 **Hands-On:**
 - Set up **a vector database** for RAG.
 - Implement **document embeddings & query processing**.
+
 📌 **Assignment:**
 - Upload sample **knowledge base documents**.
 - Test **retrieval accuracy** with sample queries.
@@ -76,6 +80,7 @@ Each class is **2 hours long**, blending **theory and hands-on activities**.
 🛠 **Hands-On:**
 - Design **a chat history table** in Supabase.
 - Implement **querying & analytics** to improve interactions.
+
 📌 **Assignment:**
 - Visualize **chat statistics** (most common queries, response time).
 - Generate insights on **how to enhance chatbot interactions**.
@@ -87,6 +92,7 @@ Each class is **2 hours long**, blending **theory and hands-on activities**.
 🛠 **Hands-On:**
 - Create **automated chatbot actions** based on user intent.
 - Implement **scheduled tasks** (e.g., follow-ups, reminders).
+
 📌 **Assignment:**
 - Develop an **automated response flow** for common user interactions.
 - Configure **alerts for unanswered queries**.
@@ -98,6 +104,7 @@ Each class is **2 hours long**, blending **theory and hands-on activities**.
 🛠 **Hands-On:**
 - Deploy chatbot for **external testing**.
 - Optimize **response speed and database queries**.
+
 📌 **Assignment:**
 - Collect **user feedback** & iterate chatbot improvements.
 - Ensure chatbot is **ready for final demo**.
@@ -109,6 +116,7 @@ Each class is **2 hours long**, blending **theory and hands-on activities**.
 🛠 **Hands-On:**
 - Each student/team **presents their chatbot**.
 - Showcase **real-time interaction & workflow automation**.
+
 📌 **Final Submission:**
 - **Final report** (architecture, features, challenges, improvements).
 - **GitHub repository** with chatbot code.
