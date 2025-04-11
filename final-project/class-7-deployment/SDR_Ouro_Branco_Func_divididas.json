@@ -1,0 +1,884 @@
+{
+  "name": "SDR Ouro Branco Func divididas",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ]
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -120
+      ],
+      "id": "43722973-1d32-4c8c-92ae-5b8e79e70826",
+      "name": "WhatsApp Trigger",
+      "webhookId": "be6ed3fb-8d7b-4419-99fd-e7cdbb535cdf",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "7Hbg1rpX3EqGq57x",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "618201701371055",
+        "recipientPhoneNumber": "={{  $('WhatsApp Trigger').item.json.contacts.last().wa_id }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        -80
+      ],
+      "id": "27e8f005-d512-4957-a212-78a4f78a31cc",
+      "name": "WhatsApp Business Cloud",
+      "webhookId": "f4ae4401-c1da-4fa7-a319-674fff11c4d0",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "rsRF3DRMQ2cjvZqz",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('WhatsApp Trigger').item.json.contacts.last().wa_id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        660,
+        100
+      ],
+      "id": "d9ce56e4-c45c-44ef-b16d-c814c1093fcb",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "FmM98qqtFzhj26Nq",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=input:\n{{ $('Status_WPP').item.json.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "=Você é o assistente virtual do Condomínio Ouro Branco Residence. Seu papel é fazer o primeiro atendimento de forma empática, acolhedora e estratégica, como se estivesse conversando com alguém prestes a tomar uma grande decisão de vida.\n\nBaseie sua conversa no histórico abaixo, reconhecendo o que o cliente disse anteriormente e conduzindo o papo com naturalidade. Utilize perguntas estratégicas que ajudem o cliente a refletir e avançar na jornada de compra, de acordo com a maturidade da conversa. Use a lógica da metodologia SPIN Selling como estrutura interna, mas nunca mencione isso explicitamente.\n\n## Histórico da conversa:\n{{ $json.data.toJsonString() }}\n\n---\n\n## O que você deve fazer:\n\n1. A cada nova mensagem, demonstre empatia e mostre que está acompanhando a conversa com atenção.\n2. Faça apenas uma pergunta por vez, como em um bate-papo humano.\n3. Utilize as perguntas estratégicas abaixo como inspiração, conforme o avanço da conversa:\n\n- Situação: “Você mora em casa própria ou alugada atualmente?”  \n- Situação: “Está procurando algo mais tranquilo, perto do centro, ou com foco em lazer?”  \n- Problema: “O que você sente falta no lugar onde mora hoje?”  \n- Problema: “Tem algo que gostaria que fosse diferente na sua casa atual?”  \n- Implicação: “Você acha que isso pode impactar a qualidade de vida da sua família a longo prazo?”  \n- Implicação: “Já pensou como seria morar em um lugar mais completo, seguro e com lazer?”  \n- Necessidade: “Você se imaginaria morando em um lugar assim, com áreas verdes e estrutura completa?”  \n- Necessidade: “Se tivéssemos algo que encaixasse no que você busca, com boas condições de pagamento, você gostaria de conhecer melhor?”\n\n4. Se o cliente fizer perguntas diretas sobre valores, localização, infraestrutura, etc., responda com base nas informações abaixo ou na base de conhecimento conectada (RAG):\n\n### Dados essenciais:\n- Localização: Dourados-MS, a 6 minutos do centro, próximo ao HU\n- Parcelamento: até 72x sem juros direto com a loteadora\n- Tamanhos: lotes a partir de 200m²\n- Estrutura: condomínio fechado, segurança 24h, áreas de lazer completas\n\n5. Se não souber a resposta, diga isso de forma gentil e convide o cliente a falar com um corretor.\n\n6. Se o cliente demonstrar forte intenção de compra ou pedir para falar com corretor, finalize com uma mensagem acolhedora e encaminhe o atendimento.\n\n---\n\n## Tom e estilo:\n- Cordial, natural, empático e profissional.\n- Use linguagem acessível, como quem quer ajudar de verdade.\n- Evite parecer robotizado ou seguir um roteiro engessado.\n- Demonstre interesse e curiosidade, como um bom atendente humano faria.\n- Evite repetir perguntas já feitas, a menos que o cliente não tenha respondido claramente.\n\n---\n\n## Regras finais:\n- Nunca envie mais de uma pergunta por vez.\n- Sempre espere a resposta do cliente antes de avançar para outra etapa.\n- Não use ou mencione a palavra \"SPIN\"."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        660,
+        -40
+      ],
+      "id": "e7081993-420a-4e14-9d04-dde4184a0ae1",
+      "name": "AI Agent1",
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        540,
+        120
+      ],
+      "id": "5b3834dc-194d-48be-93a0-355adc19e865",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "lQO9eH0Bzj3a0zaB",
+          "name": "OpenAi Miguel"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-large",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        820,
+        260
+      ],
+      "id": "68b42732-834b-41ca-a056-30fdb7e08bfb",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "lQO9eH0Bzj3a0zaB",
+          "name": "OpenAi Miguel"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "OuroBranco",
+        "toolDescription": "Here you have information about Ouro Branco Residence",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1,
+      "position": [
+        780,
+        100
+      ],
+      "id": "de04c4bd-34ca-4c4d-aa31-b67c2daec9fc",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "KvsDisiqghHHmMG5",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  message->>'type' AS remetente,\n  message->>'content' AS conteudo\nFROM \n  n8n_chat_histories\nWHERE \n session_id = '{{ $('WhatsApp Trigger').item.json.contacts.last().wa_id }}';\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        340,
+        -40
+      ],
+      "id": "5ed63742-2950-4121-8f11-1091dc8c7d4d",
+      "name": "Postgres",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "FmM98qqtFzhj26Nq",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -40
+      ],
+      "id": "60526bf1-4c86-49e0-a2a5-89a7e31efb6b",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "15_OhvaiNeLXdP2RrrDMuJuIwZ4kRB8RivByCDyv_6o8",
+          "mode": "list",
+          "cachedResultName": "Clientes Ouro Branco WPP",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15_OhvaiNeLXdP2RrrDMuJuIwZ4kRB8RivByCDyv_6o8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Clientes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15_OhvaiNeLXdP2RrrDMuJuIwZ4kRB8RivByCDyv_6o8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Resumo": "={{ $json.output.Resumo }}",
+            "Tem interesse": "={{ $json.output.Interesse }}",
+            "Nome": "={{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}",
+            "Numero_Telefone": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}"
+          },
+          "matchingColumns": [
+            "Numero_Telefone"
+          ],
+          "schema": [
+            {
+              "id": "Numero_Telefone",
+              "displayName": "Numero_Telefone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nome",
+              "displayName": "Nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resumo",
+              "displayName": "Resumo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tem interesse",
+              "displayName": "Tem interesse",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2300,
+        -120
+      ],
+      "id": "1f5bb3ff-9173-4c54-948d-12b6b90b1e05",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8rvvhdp9KFn25Cx8",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "phoneNumberId": "618201701371055",
+        "recipientPhoneNumber": "5567992902664",
+        "template": "sdrourobrancov2|pt_BR",
+        "components": {
+          "component": [
+            {
+              "bodyParameters": {
+                "parameter": [
+                  {
+                    "text": "={{ $('Google Sheets').item.json.Nome }}"
+                  },
+                  {
+                    "text": "={{ $('Google Sheets').item.json.Numero_Telefone }}"
+                  },
+                  {
+                    "text": "={{ $('Google Sheets').item.json.Resumo }}"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        2720,
+        -180
+      ],
+      "id": "d7d5e265-2c3d-4b11-a401-c758be074650",
+      "name": "WhatsApp Business Cloud1",
+      "webhookId": "cca24272-600d-467f-8533-44003736a096",
+      "retryOnFail": false,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "rsRF3DRMQ2cjvZqz",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "58fd1a6e-bc04-4147-ac1b-ade238262f51",
+              "leftValue": "={{ $json.contacts[0].wa_id }}",
+              "rightValue": "={{ $json.contacts[0].wa_id }}",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -200,
+        -120
+      ],
+      "id": "77d86213-7d2f-4af8-9145-282a4b33487c",
+      "name": "Status_WPP"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "78600e43-a1a8-4da5-b6ee-b1d402b8c620",
+              "leftValue": "={{ $json['Tem interesse'] }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2480,
+        -120
+      ],
+      "id": "d74e359d-eed6-4168-86e1-d0a063930e35",
+      "name": "ClienteTemInteresse?",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.data }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Você é um assistente analista do atendimento do Condomínio Ouro Branco Residence. Sua função é analisar a conversa entre um cliente e o atendente virtual (Agente 1), e classificar se o cliente demonstrou interesse real no empreendimento.\n\n## Sua tarefa:\n\nAnalise o conteúdo da conversa e **retorne SOMENTE** um objeto JSON plano com os campos:\n\n```json\n{\n  \"Resumo\": \"Resumo claro e breve do que o cliente buscou ou comentou.\",\n  \"Interesse\": true ou false\n}\n```\n\n---\n\n## Critérios de avaliação para `Interesse`:\n\n**Use `true` se ao menos um destes pontos for verdadeiro:**\n1. O cliente demonstrou intenção clara de **comprar**, **investir**, **morar** ou **avançar** na negociação;\n2. O cliente respondeu perguntas de SPIN com profundidade (problema, implicação ou necessidade);\n3. O cliente fez perguntas específicas sobre **valores, condições de pagamento, estrutura, prazos ou localização**.\n\n**Use `false` se TODOS os pontos abaixo forem verdadeiros:**\n1. O cliente fez apenas perguntas superficiais (ex: \"tem piscina?\", \"onde fica?\");\n2. Não respondeu às perguntas de qualificação;\n3. Não demonstrou intenção clara de compra ou ação relevante.\n\n---\n\n## Formato final:\nRetorne somente este objeto JSON (sem explicações extras):\n\n```json\n{\n  \"Resumo\": \"Texto aqui...\",\n  \"Interesse\": true\n}\n```"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        1940,
+        -120
+      ],
+      "id": "9034f0b1-520c-486c-a0f9-051d07cf1bbe",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "06618e27-ee1a-4437-b67c-5a139d8a09cd",
+              "leftValue": "={{ Number($json.count) }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1340,
+        -80
+      ],
+      "id": "c96d1e8e-1cc7-4b81-8c83-1e09fb1d7c96",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4-0125-preview",
+          "mode": "list",
+          "cachedResultName": "gpt-4-0125-preview"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1940,
+        60
+      ],
+      "id": "491acef1-8925-4efe-8dc6-a452ef68e34a",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "lQO9eH0Bzj3a0zaB",
+          "name": "OpenAi Miguel"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  message->>'type' AS remetente,\n  message->>'content' AS conteudo\nFROM \n  n8n_chat_histories\nWHERE \n session_id = '{{ $('WhatsApp Trigger').item.json.contacts.last().wa_id }}';\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1600,
+        -120
+      ],
+      "id": "167bf555-63f1-4628-9090-5b57860c9223",
+      "name": "Postgres1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "FmM98qqtFzhj26Nq",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        -120
+      ],
+      "id": "2e7c3835-5144-41f8-a118-a41453701fb7",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"Resumo\": \"Texto aqui...\",\n  \"Interesse\": true\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        2120,
+        60
+      ],
+      "id": "10163200-6501-49a2-a546-a12bec5cd9c0",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fbcaaac6-1180-4501-b7e0-dcb72785fe50",
+              "leftValue": "={{ \n  $json.messages[0].text.body.toLowerCase().includes(\"falar com corretor\") ||\n  $json.messages[0].text.body.toLowerCase().includes(\"quero comprar\") ||\n  $json.messages[0].text.body.toLowerCase().includes(\"me atender\")\n}}\n",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        120,
+        -120
+      ],
+      "id": "fda0928a-86ba-458d-b254-2ba647174dd5",
+      "name": "\"quero falar com corretor\""
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) AS count\nFROM n8n_chat_histories\nWHERE session_id = '{{ $json.contacts[0].wa_id }}'\nAND message->>'type' = 'human';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1160,
+        -80
+      ],
+      "id": "32444a69-d619-497a-9c8d-ce041cdcdd0a",
+      "name": "Postgres2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "FmM98qqtFzhj26Nq",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"Resumo\": \"Decidiu falar com corretor\",\n  \"Interesse\": true\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2000,
+        -420
+      ],
+      "id": "f5c6306b-2315-4ac7-ad4b-7b27d8304ccb",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {
+    "WhatsApp Trigger": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "5511965883538",
+            "phone_number_id": "618201701371055"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Miguel de Deus Perez"
+              },
+              "wa_id": "556792902664"
+            }
+          ],
+          "messages": [
+            {
+              "from": "556792902664",
+              "id": "wamid.HBgMNTU2NzkyOTAyNjY0FQIAEhggNDM5MzAxNTJCQjBBM0FFREUxRjQ1QTM2RTFGMEYxQzEA",
+              "timestamp": "1744375379",
+              "text": {
+                "body": "Bom dia"
+              },
+              "type": "text"
+            }
+          ],
+          "field": "messages"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Status_WPP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Business Cloud": {
+      "main": [
+        [
+          {
+            "node": "Postgres2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "ClienteTemInteresse?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status_WPP": {
+      "main": [
+        [
+          {
+            "node": "\"quero falar com corretor\"",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ClienteTemInteresse?": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business Cloud1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Business Cloud1": {
+      "main": [
+        []
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Postgres1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "\"quero falar com corretor\"": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "saveExecutionProgress": true
+  },
+  "versionId": "66dbddbf-11d0-4689-897d-8b2784070642",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6cd3d3fa5ce65f4f05e378566416c225b677e33efa9c6199ab3fe9a7c6b68fc2"
+  },
+  "id": "tJayWepXANEgDGIN",
+  "tags": []
+}
